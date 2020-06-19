@@ -27,7 +27,7 @@
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 
-#include "../codecs/i-sabre-codec.h"
+#include "i-sabre-codec.h"
 
 
 static int snd_rpi_i_sabre_q2m_init(struct snd_soc_pcm_runtime *rtd)
