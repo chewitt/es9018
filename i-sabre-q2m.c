@@ -30,7 +30,7 @@
 #include "i-sabre-codec.h"
 
 
-static int snd_rpi_i_sabre_q2m_init(struct snd_soc_pcm_runtime *rtd)
+static int snd_aml_i_sabre_q2m_init(struct snd_soc_pcm_runtime *rtd)
 {
 	struct snd_soc_component *component = rtd->codec_dai->component;
 	unsigned int value;
@@ -46,7 +46,7 @@ static int snd_rpi_i_sabre_q2m_init(struct snd_soc_pcm_runtime *rtd)
 	return 0;
 }
 
-static int snd_rpi_i_sabre_q2m_hw_params(
+static int snd_aml_i_sabre_q2m_hw_params(
 	struct snd_pcm_substream *substream, struct snd_pcm_hw_params *params)
 {
 	struct snd_soc_pcm_runtime *rtd     = substream->private_data;
@@ -59,46 +59,46 @@ static int snd_rpi_i_sabre_q2m_hw_params(
 }
 
 /* machine stream operations */
-static struct snd_soc_ops snd_rpi_i_sabre_q2m_ops = {
-	.hw_params = snd_rpi_i_sabre_q2m_hw_params,
+static struct snd_soc_ops snd_aml_i_sabre_q2m_ops = {
+	.hw_params = snd_aml_i_sabre_q2m_hw_params,
 };
 
-SND_SOC_DAILINK_DEFS(rpi_i_sabre_q2m,
+/* SND_SOC_DAILINK_DEFS(aml_i_sabre_q2m,
 	DAILINK_COMP_ARRAY(COMP_CPU("bcm2708-i2s.0")),
 	DAILINK_COMP_ARRAY(COMP_CODEC("i-sabre-codec-i2c.1-0048", "i-sabre-codec-dai")),
-	DAILINK_COMP_ARRAY(COMP_PLATFORM("bcm2708-i2s.0")));
+	DAILINK_COMP_ARRAY(COMP_PLATFORM("bcm2708-i2s.0"))); */
 
-static struct snd_soc_dai_link snd_rpi_i_sabre_q2m_dai[] = {
+static struct snd_soc_dai_link snd_aml_i_sabre_q2m_dai[] = {
 	{
 		.name           = "I-Sabre Q2M",
 		.stream_name    = "I-Sabre Q2M DAC",
 		.dai_fmt        = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
 						| SND_SOC_DAIFMT_CBS_CFS,
-		.init           = snd_rpi_i_sabre_q2m_init,
-		.ops            = &snd_rpi_i_sabre_q2m_ops,
-		SND_SOC_DAILINK_REG(rpi_i_sabre_q2m),
+		.init           = snd_aml_i_sabre_q2m_init,
+		.ops            = &snd_aml_i_sabre_q2m_ops,
+		SND_SOC_DAILINK_REG(aml_i_sabre_q2m),
 	}
 };
 
 /* audio machine driver */
-static struct snd_soc_card snd_rpi_i_sabre_q2m = {
+static struct snd_soc_card snd_aml_i_sabre_q2m = {
 	.name      = "I-Sabre Q2M DAC",
 	.owner     = THIS_MODULE,
-	.dai_link  = snd_rpi_i_sabre_q2m_dai,
-	.num_links = ARRAY_SIZE(snd_rpi_i_sabre_q2m_dai)
+	.dai_link  = snd_aml_i_sabre_q2m_dai,
+	.num_links = ARRAY_SIZE(snd_aml_i_sabre_q2m_dai)
 };
 
 
-static int snd_rpi_i_sabre_q2m_probe(struct platform_device *pdev)
+static int snd_aml_i_sabre_q2m_probe(struct platform_device *pdev)
 {
 	int ret = 0;
 
-	snd_rpi_i_sabre_q2m.dev = &pdev->dev;
+	snd_aml_i_sabre_q2m.dev = &pdev->dev;
 	if (pdev->dev.of_node) {
 		struct device_node *i2s_node;
 		struct snd_soc_dai_link *dai;
 
-		dai = &snd_rpi_i_sabre_q2m_dai[0];
+		dai = &snd_aml_i_sabre_q2m_dai[0];
 		i2s_node = of_parse_phandle(pdev->dev.of_node,
 							"i2s-controller", 0);
 		if (i2s_node) {
@@ -122,7 +122,7 @@ static int snd_rpi_i_sabre_q2m_probe(struct platform_device *pdev)
 	/* Wait for registering codec driver */
 	mdelay(50);
 
-	ret = snd_soc_register_card(&snd_rpi_i_sabre_q2m);
+	ret = snd_soc_register_card(&snd_aml_i_sabre_q2m);
 	if (ret) {
 		dev_err(&pdev->dev,
 			"snd_soc_register_card() failed: %d\n", ret);
@@ -131,27 +131,27 @@ static int snd_rpi_i_sabre_q2m_probe(struct platform_device *pdev)
 	return ret;
 }
 
-static int snd_rpi_i_sabre_q2m_remove(struct platform_device *pdev)
+static int snd_aml_i_sabre_q2m_remove(struct platform_device *pdev)
 {
-	return snd_soc_unregister_card(&snd_rpi_i_sabre_q2m);
+	return snd_soc_unregister_card(&snd_aml_i_sabre_q2m);
 }
 
-static const struct of_device_id snd_rpi_i_sabre_q2m_of_match[] = {
+static const struct of_device_id snd_aml_i_sabre_q2m_of_match[] = {
 	{ .compatible = "audiophonics,i-sabre-q2m", },
 	{}
 };
-MODULE_DEVICE_TABLE(of, snd_rpi_i_sabre_q2m_of_match);
+MODULE_DEVICE_TABLE(of, snd_aml_i_sabre_q2m_of_match);
 
-static struct platform_driver snd_rpi_i_sabre_q2m_driver = {
+static struct platform_driver snd_aml_i_sabre_q2m_driver = {
 	.driver = {
-		.name           = "snd-rpi-i-sabre-q2m",
+		.name           = "snd-aml-i-sabre-q2m",
 		.owner          = THIS_MODULE,
-		.of_match_table = snd_rpi_i_sabre_q2m_of_match,
+		.of_match_table = snd_aml_i_sabre_q2m_of_match,
 	},
-	.probe  = snd_rpi_i_sabre_q2m_probe,
-	.remove = snd_rpi_i_sabre_q2m_remove,
+	.probe  = snd_aml_i_sabre_q2m_probe,
+	.remove = snd_aml_i_sabre_q2m_remove,
 };
-module_platform_driver(snd_rpi_i_sabre_q2m_driver);
+module_platform_driver(snd_aml_i_sabre_q2m_driver);
 
 MODULE_DESCRIPTION("ASoC Driver for I-Sabre Q2M");
 MODULE_AUTHOR("Audiophonics <http://www.audiophonics.fr>");
