@@ -63,10 +63,10 @@ static struct snd_soc_ops snd_aml_i_sabre_q2m_ops = {
 	.hw_params = snd_aml_i_sabre_q2m_hw_params,
 };
 
-/* SND_SOC_DAILINK_DEFS(aml_i_sabre_q2m,
-	DAILINK_COMP_ARRAY(COMP_CPU("bcm2708-i2s.0")),
+SND_SOC_DAILINK_DEFS(aml_i_sabre_q2m,
+	DAILINK_COMP_ARRAY(COMP_CPU("amlogic-i2s.0")),
 	DAILINK_COMP_ARRAY(COMP_CODEC("i-sabre-codec-i2c.1-0048", "i-sabre-codec-dai")),
-	DAILINK_COMP_ARRAY(COMP_PLATFORM("bcm2708-i2s.0"))); */
+	DAILINK_COMP_ARRAY(COMP_PLATFORM("amlogic-i2s.0")));
 
 static struct snd_soc_dai_link snd_aml_i_sabre_q2m_dai[] = {
 	{
