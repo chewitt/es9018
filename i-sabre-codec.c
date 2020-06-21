@@ -130,10 +130,8 @@ SOC_ENUM("I2S/SPDIF Select", i_sabre_iis_spdif_sel_enum),
 
 
 static const u32 i_sabre_codec_dai_rates_slave[] = {
-	8000, 11025, 16000, 22050, 32000,
-	44100, 48000, 64000, 88200, 96000,
-	176400, 192000, 352800, 384000,
-	705600, 768000, 1411200, 1536000
+	8000, 11025, 16000, 22050, 32000, 44100,
+	48000, 64000, 88200, 96000, 176400, 192000
 };
 
 static const struct snd_pcm_hw_constraint_list constraints_slave = {
@@ -210,15 +208,6 @@ static int i_sabre_codec_hw_params(
 	case 192000:
 		snd_soc_component_update_bits(component, ISABRECODEC_REG_10, 0x01, 0x00);
 		break;
-
-	case 352800:
-	case 384000:
-	case 705600:
-	case 768000:
-	case 1411200:
-	case 1536000:
-		snd_soc_component_update_bits(component, ISABRECODEC_REG_10, 0x01, 0x01);
-		break;
 	}
 
 	return 0;
@@ -281,8 +270,9 @@ static struct snd_soc_dai_driver i_sabre_codec_dai = {
 		.channels_max = 2,
 		.rates = SNDRV_PCM_RATE_CONTINUOUS,
 		.rate_min = 8000,
-		.rate_max = 1536000,
+		.rate_max = 192000,
 		.formats      = SNDRV_PCM_FMTBIT_S16_LE
+				| SNDRV_PCM_FMTBIT_S24_LE
 				| SNDRV_PCM_FMTBIT_S32_LE,
 	},
 	.ops = &i_sabre_codec_dai_ops,
